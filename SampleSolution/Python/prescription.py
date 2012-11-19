@@ -6,11 +6,9 @@ class Prescription(object):
         self.dispense_date = dispense_date or date.today()
         self.days_supply = days_supply
     
-    def completion_date(self):
-        return self.dispense_date + timedelta(days = self.days_supply)
-        
-    def days_taken(self):
+    def dates_taken(self):
         return [self.dispense_date + timedelta(days=i) for i in range(self.days_supply)]
-        
-    def __cmp__(self, other):
-        return cmp(self.dispense_date, other.dispense_date)
+
+    def dates_taken_in_past_x_days(self, day_count):
+        return set(filter(lambda date_taken: (date.today() - timedelta(day_count)) <= date_taken < date.today(),
+                          self.dates_taken()))
